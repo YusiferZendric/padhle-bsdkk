@@ -138,7 +138,7 @@ def check_and_send_messages():
             print('done 1')
             # numberofmessages+=1
             # print(numberofmessages)
-            time.sleep(1500)
+            time.sleep(1250)
 
             print('done 2')
         except prawcore.exceptions.Forbidden:
