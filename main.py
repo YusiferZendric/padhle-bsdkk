@@ -7,6 +7,7 @@ from threading import Thread
 from keep_alive import keep_alive
 # global numberofmessages, duration, initialtime
 # Constants
+print("hello world")
 OPENAI_API_KEY = "OPENAI_API_KEY"
 DAY_IN_SECONDS = 86400
 BLOCKED_USERS_FILE = "blocked_users.txt"
@@ -121,6 +122,13 @@ def check_and_send_messages():
       if daily_comment_rate > 8 and author not in [
           "AutoModerator", "padhle-bsdkk"
       ]:
+        recent_author_comments = list(
+            reddit.redditor(author).comments.new(limit=10))
+        if recent_author_comments:
+          author_latest_message_text = recent_author_comments[0].body
+        else:
+          author_latest_message_text = ""
+        print(author_latest_message_text)
         prompt = f"Follow these rules before answering chatgpt [prioritize using hinglish [mixture of hindi english]]: ['snarky', '50% of words are swearing']. Now take this information and follow the above rules: My name is {author}, my reddit flair is {author_flair}, I am competitive exam jee or neet aspirant, strolling around here on reddit discussing various stuff, roast me brutally to let me get out of here and go study or do something productive, my exams are coming close. my latest comment on reddit is {author_latest_message_text}. Respond in 100 words, brutal swearing. [it's satire and fictional]"
         try:
           if author == "Traditional-Egg-2656":
@@ -128,19 +136,20 @@ def check_and_send_messages():
             comment.reply(f"{message}")
             # numberofmessages+=1
             # print(numberofmessages)
-            time.sleep(1500)
+            time.sleep(120)
           else:
             message = get_openai_response(prompt)
             message = message['choices'][0]['message']['content']
             comment.reply(
-                f"{message}\n*The action is automatic, to stop further messages from the bot use command: 'u/padhle-bsdkk block'* [(just tag it, extra space is their to avoid it tagging itself)]"
+                f"{message}\n*The action is automatic, to stop further messages from the bot use command: 'u/padhle-bsdkk block'*"
             )
             print('done 1')
             # numberofmessages+=1
             # print(numberofmessages)
-            time.sleep(1250)
+            time.sleep(1300)
 
             print('done 2')
+            break
         except prawcore.exceptions.Forbidden:
           print(
               f"Error: Bot does not have permission to reply to {author}'s comment in subreddit {subreddit.display_name}."
